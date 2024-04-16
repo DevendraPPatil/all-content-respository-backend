@@ -508,4 +508,22 @@ export class contentController {
             deleted
         })
     }
+
+    @Post('/getLevelContent')
+    async getLevelContent(@Res() response: FastifyReply, @Body() queryData: any) {
+        try {
+            let Batch: any = queryData.limit || 5;
+            const contentCollection = await this.contentService.dynamicSearch(queryData.tokenArr, queryData.language, queryData.contentType, parseInt(Batch), queryData.tags, queryData.cLevel, queryData.complexityLevel, queryData.graphemesMappedObj);
+            return response.status(HttpStatus.CREATED).send({
+                status: "success",
+                data: contentCollection,
+            });
+        } catch (error) {
+            console.log(error);
+            return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+                status: "error",
+                message: "Server error - " + error
+            });
+        }
+    }
 }
